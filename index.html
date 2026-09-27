@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UA Creative Capacity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F3F5FA;
+    --surface: #FFFFFF;
+    --surface-2: #EAEDF6;
+    --border: #DBE0EE;
+    --text: #141B33;
+    --text-muted: #5B6584;
+    --accent: #3B4FDB;
+    --accent-soft: #E6E9FB;
+    --ok: #16916F;
+    --ok-soft: #DEF3EB;
+    --warn: #B4700B;
+    --warn-soft: #FBECD4;
+    --danger: #C13F3A;
+    --danger-soft: #FAE3E1;
+    --sans: 'IBM Plex Sans', -apple-system, 'Malgun Gothic', sans-serif;
+    --mono: 'IBM Plex Mono', 'SF Mono', monospace;
+    --shadow: 0 1px 2px rgba(20,27,51,0.04), 0 6px 20px rgba(20,27,51,0.06);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E1428;
+      --surface: #161F3B;
+      --surface-2: #1D2848;
+      --border: #2B3760;
+      --text: #E8EAF6;
+      --text-muted: #94A0C7;
+      --accent: #7C8CFF;
+      --accent-soft: #232E58;
+      --ok: #3FCDA5;
+      --ok-soft: #163A32;
+      --warn: #EAA84B;
+      --warn-soft: #3E2E14;
+      --danger: #F07770;
+      --danger-soft: #3E1E1C;
+      --shadow: 0 1px 2px rgba(0,0,0,0.2), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E1428;
+    --surface: #161F3B;
+    --surface-2: #1D2848;
+    --border: #2B3760;
+    --text: #E8EAF6;
+    --text-muted: #94A0C7;
+    --accent: #7C8CFF;
+    --accent-soft: #232E58;
+    --ok: #3FCDA5;
+    --ok-soft: #163A32;
+    --warn: #EAA84B;
+    --warn-soft: #3E2E14;
+    --danger: #F07770;
+    --danger-soft: #3E1E1C;
+    --shadow: 0 1px 2px rgba(0,0,0,0.2), 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+  }
+  body { min-height: 100vh; padding: 28px 20px 64px; }
+
+  .wrap { max-width: 1180px; margin: 0 auto; }
+
+  header.top {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 16px; margin-bottom: 22px; flex-wrap: wrap;
+  }
+  header.top h1 {
+    font-size: 22px; font-weight: 700; margin: 0 0 4px;
+    letter-spacing: -0.01em;
+  }
+  header.top p {
+    margin: 0; color: var(--text-muted); font-size: 13.5px; max-width: 52ch; line-height: 1.55;
+  }
+  .theme-toggle {
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text-muted); border-radius: 8px; padding: 7px 12px;
+    font-family: var(--sans); font-size: 12.5px; cursor: pointer;
+    display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+  }
+  .theme-toggle:hover { color: var(--text); border-color: var(--accent); }
+
+  /* Hero summary strip */
+  .hero {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
+    background: var(--border); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden; margin-bottom: 24px;
+    box-shadow: var(--shadow);
+  }
+  .hero-cell {
+    background: var(--surface); padding: 18px 20px;
+    display: flex; flex-direction: column; gap: 6px; justify-content: center;
+  }
+  .hero-cell .label { font-size: 11.5px; color: var(--text-muted); letter-spacing: 0.01em; }
+  .hero-cell .value {
+    font-family: var(--mono); font-size: 26px; font-weight: 600;
+    letter-spacing: -0.02em; line-height: 1.1;
+  }
+  .hero-cell .sub { font-size: 11.5px; color: var(--text-muted); font-family: var(--mono); }
+  .hero-cell.judge .value { font-size: 17px; font-family: var(--sans); font-weight: 700; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px; border-radius: 999px; font-size: 12.5px; font-weight: 600;
+  }
+  .badge.ok { background: var(--ok-soft); color: var(--ok); }
+  .badge.warn { background: var(--warn-soft); color: var(--warn); }
+  .badge.danger { background: var(--danger-soft); color: var(--danger); }
+  .badge.neutral { background: var(--surface-2); color: var(--text-muted); }
+
+  /* Main grid */
+  .grid {
+    display: grid; grid-template-columns: 320px 1fr; gap: 20px; align-items: start;
+  }
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .hero { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px 18px 20px; box-shadow: var(--shadow);
+  }
+  .panel + .panel { margin-top: 20px; }
+  .panel h2 {
+    font-size: 13px; font-weight: 700; margin: 0 0 14px;
+    color: var(--text); display: flex; align-items: center; justify-content: space-between;
+  }
+  .panel h2 .hint { font-size: 11px; font-weight: 400; color: var(--text-muted); }
+
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 12.5px; color: var(--text-muted); margin-bottom: 5px;
+  }
+  .field label .val {
+    font-family: var(--mono); font-size: 12px; color: var(--text); font-weight: 600;
+  }
+  .field input[type="number"] {
+    width: 100%; padding: 8px 10px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--surface-2);
+    color: var(--text); font-family: var(--mono); font-size: 13.5px;
+  }
+  .field input[type="number"]:focus,
+  .field input[type="range"]:focus {
+    outline: 2px solid var(--accent); outline-offset: 1px;
+  }
+  .field input[type="range"] {
+    width: 100%; accent-color: var(--accent); height: 4px;
+  }
+  .field select {
+    width: 100%; padding: 8px 10px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--surface-2);
+    color: var(--text); font-family: var(--sans); font-size: 13px;
+  }
+  .field select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .field .unit { color: var(--text-muted); font-size: 11.5px; margin-top: 3px; }
+
+  hr.div { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+  /* Media table (inputs) */
+  .media-list { display: flex; flex-direction: column; gap: 10px; }
+  .media-row {
+    border: 1px solid var(--border); border-radius: 10px; padding: 10px;
+    background: var(--surface-2);
+  }
+  .mr-top { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; }
+  .mr-top input[type="text"] {
+    flex: 1; padding: 7px 8px; border-radius: 7px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text); font-size: 12.5px; font-family: var(--sans);
+  }
+  .mr-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+  }
+  .mr-grid label {
+    display: flex; flex-direction: column; gap: 3px;
+    font-size: 10px; color: var(--text-muted);
+  }
+  .mr-grid input[type="number"] {
+    padding: 6px; border-radius: 7px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text); font-size: 12.5px; font-family: var(--mono);
+    width: 100%; text-align: right;
+  }
+  .media-row button.rm {
+    background: none; border: none; color: var(--text-muted); cursor: pointer;
+    font-size: 16px; line-height: 1; padding: 4px 6px; flex-shrink: 0;
+  }
+  .media-row button.rm:hover { color: var(--danger); }
+  .add-media {
+    margin-top: 12px; width: 100%; padding: 8px; border-radius: 8px;
+    border: 1px dashed var(--border); background: transparent; color: var(--text-muted);
+    font-family: var(--sans); font-size: 12.5px; cursor: pointer;
+  }
+  .add-media:hover { border-color: var(--accent); color: var(--accent); }
+
+  .share-total {
+    margin-top: 10px; font-size: 11.5px; color: var(--text-muted);
+    display: flex; justify-content: space-between; font-family: var(--mono);
+  }
+  .share-total.bad { color: var(--danger); font-weight: 600; }
+
+  /* Results table */
+  table.results {
+    width: 100%; border-collapse: collapse; font-size: 12.5px;
+  }
+  table.results th {
+    text-align: right; font-weight: 600; color: var(--text-muted);
+    font-size: 10.5px; padding: 6px 10px; border-bottom: 1px solid var(--border);
+  }
+  table.results th:first-child { text-align: left; }
+  table.results td {
+    padding: 10px; border-bottom: 1px solid var(--border);
+    font-family: var(--mono); text-align: right; white-space: nowrap;
+  }
+  table.results td:first-child {
+    text-align: left; font-family: var(--sans); font-weight: 600; white-space: normal;
+  }
+  table.results tbody tr:last-child td { border-bottom: none; }
+  table.results tfoot td {
+    font-weight: 700; border-top: 1px solid var(--border); border-bottom: none;
+    padding-top: 12px;
+  }
+  .scroller { overflow-x: auto; }
+
+  .stack-note {
+    margin-top: 16px; padding: 12px 14px; background: var(--surface-2);
+    border-radius: 10px; font-size: 12px; color: var(--text-muted); line-height: 1.6;
+  }
+  .stack-note b { color: var(--text); }
+
+  .glossary-panel { margin-top: 20px; }
+  dl.glossary {
+    margin: 0; display: grid;
+    grid-template-columns: 160px 1fr; column-gap: 18px; row-gap: 12px;
+  }
+  dl.glossary dt {
+    font-weight: 700; font-size: 12.5px; color: var(--text);
+    grid-column: 1; padding-top: 1px;
+  }
+  dl.glossary dd {
+    grid-column: 2; margin: 0; font-size: 12.5px; color: var(--text-muted); line-height: 1.65;
+  }
+  @media (max-width: 640px) {
+    dl.glossary { grid-template-columns: 1fr; row-gap: 3px; }
+    dl.glossary dt { grid-column: 1; }
+    dl.glossary dd { grid-column: 1; margin-bottom: 4px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  }
+
+  footer.legend {
+    margin-top: 22px; display: flex; gap: 18px; flex-wrap: wrap;
+    font-size: 11.5px; color: var(--text-muted);
+  }
+  footer.legend span { display: inline-flex; align-items: center; gap: 6px; }
+  footer.legend i { width: 9px; height: 9px; border-radius: 3px; display: inline-block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>UA Creative Capacity</h1>
+      <p>매체별 일예산과 목표 CPN을 기준으로 지금 운영해야 할 Active 소재 수와 주간 신규 소재 수급량을 계산합니다.</p>
+    </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="테마 전환">🌗 <span id="themeLabel">테마</span></button>
+  </header>
+
+  <div class="hero" id="heroStrip"></div>
+
+  <div class="grid">
+    <!-- LEFT: inputs -->
+    <div>
+      <div class="panel">
+        <h2>공통 기준값</h2>
+
+        <div class="field">
+          <label>총 일예산 (원) <span class="val" id="v_budget"></span></label>
+          <input type="number" id="budget" value="5000000" min="0" step="100000">
+        </div>
+
+        <div class="field">
+          <label>목표 CPN (원) <span class="val" id="v_cpn"></span></label>
+          <input type="number" id="cpn" value="20000" min="1" step="1000">
+        </div>
+
+        <div class="field">
+          <label>최소 판단 전환 수 (건/소재) <span class="val" id="v_minconv"></span></label>
+          <input type="number" id="minconv" value="20" min="1" step="1">
+          <div class="unit">소재 1개의 효율을 판단하려면 안정화 기간 동안 최소 몇 건의 전환이 쌓여야 하는지.</div>
+        </div>
+
+        <div class="field">
+          <label>안정화 기간 (일) <span class="val" id="v_stabdays"></span></label>
+          <input type="number" id="stabdays" value="7" min="1" step="1">
+          <div class="unit">위 최소 전환 수가 쌓이는 관찰 기간. 짧게 잡을수록 이론상 테스트가능 소재 수가 낮게(보수적으로) 계산됨.</div>
+        </div>
+
+        <hr class="div">
+
+        <div class="field" style="margin-bottom:0">
+          <label>적정 소재 기준 수 (개) <span class="val" id="v_basecount"></span></label>
+          <input type="number" id="basecount" value="20" min="1" step="1">
+          <div class="unit">이 타이틀에서 효율이 안정되는 소재 수. 실측 데이터 기준(예: 소재당 일평균 1건 전환 확보 시점)으로 정한다.</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>매체별 배분 <span class="hint">비중 합 100%</span></h2>
+        <div class="media-list" id="mediaList"></div>
+        <button class="add-media" id="addMedia">+ 매체 추가</button>
+        <div class="share-total" id="shareTotal"></div>
+
+        <hr class="div">
+
+        <div class="field" style="margin-bottom:0">
+          <label>기준 매체 (Unique 소재 수 산정 기준)</label>
+          <select id="baseMedia"></select>
+          <div class="unit">소재는 여러 매체에 중복 운영되므로, 단순 합산 대신 이 매체 1곳의 권장/현재 Active 값을 전체 Unique 소재 수 기준으로 사용합니다.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: results -->
+    <div>
+      <div class="panel">
+        <h2>매체별 계산 결과</h2>
+        <div class="scroller">
+          <table class="results">
+            <thead>
+              <tr>
+                <th>매체</th>
+                <th>일예산</th>
+                <th>이론상<br>테스트가능</th>
+                <th>권장<br>Active</th>
+                <th>현재<br>Active</th>
+                <th>판정</th>
+              </tr>
+            </thead>
+            <tbody id="resultsBody"></tbody>
+            <tfoot id="resultsFoot"></tfoot>
+          </table>
+        </div>
+        <div class="stack-note" id="stackNote"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel glossary-panel">
+    <h2>용어 정의</h2>
+    <dl class="glossary">
+      <dt>총 일예산</dt>
+      <dd>모든 매체를 합친 하루 전체 광고비.</dd>
+
+      <dt>목표 CPN</dt>
+      <dd>신규 전환(설치·가입 등) 1건을 얻는 데 목표로 하는 비용.</dd>
+
+      <dt>최소 판단 전환 수</dt>
+      <dd>소재 1개의 효율을 판단하는 데 필요한 최소 전환 건수(기본 20건). 전환이 1~2건만 쌓인 상태로는 그 소재가 잘 되는지 판단할 수 없기 때문에, 안정화 기간 동안 이 건수 이상이 쌓여야 "판단 가능"으로 본다.</dd>
+
+      <dt>안정화 기간</dt>
+      <dd>최소 판단 전환 수가 쌓이는 데 걸리는 관찰 기간(기본 7일). 이 기간 동안의 예산을 최소 판단 전환 수로 나눠, 소재 1개당 필요한 예산 규모를 역산한다.</dd>
+
+      <dt>적정 소재 기준 수</dt>
+      <dd>이 타이틀에서 효율이 안정되는 소재 수(기본 20개). 실측 테스트에서 "소재당 일평균 1건 전환이 확보되는 수량"으로 관찰된 값이며, 타이틀마다 직접 조정할 수 있다.</dd>
+
+      <dt>비중%</dt>
+      <dd>총 일예산 중 해당 매체에 배분하는 비율.</dd>
+
+      <dt>캠페인 수</dt>
+      <dd>같은 매체 안에서 운영 중인 캠페인(또는 애드그룹) 개수. OS별·최적화 목표별로 나뉜 캠페인들이 매체 예산을 쪼개 쓰므로, 이 수로 나눠야 캠페인당 실제 예산 규모가 나온다.</dd>
+
+      <dt>현재수 (현재 Active 소재 수)</dt>
+      <dd>지금 이 순간 해당 매체에서 켜져 있는 소재 개수. 권장 Active와 비교해 과다·부족을 판정하는 데 쓰인다.</dd>
+
+      <dt>이론상 테스트가능 소재</dt>
+      <dd>(캠페인당 일예산 × 안정화 기간) ÷ (목표 CPN × 최소 판단 전환 수)로 계산되는, 안정화 기간 동안 캠페인당 실제로 판단 가능한 소재 개수. 단순히 일예산을 CPN으로 나눈 값(소재당 하루 1건 전환)이 아니라, 소재 1개를 판단하려면 최소 판단 전환 수만큼의 전환이 안정화 기간 동안 쌓여야 한다는 점을 반영한 값이다.</dd>
+
+      <dt>확장 / 적정 / 보수 구간</dt>
+      <dd>이론상 테스트가능 소재를 적정 소재 기준 수와 비교한 결과. 기준보다 크면 확장(예산 여력 있음), 작으면 보수(기준보다 적게 운영), 비슷하면 적정 구간으로 표시된다.</dd>
+
+      <dt>권장 Active 소재</dt>
+      <dd>이론상 테스트가능 소재와 적정 소재 기준 수 중 더 작은 값. 예산이 아무리 커도 효율이 검증된 기준 수 이상으로는 무작정 늘리지 않는다.</dd>
+
+      <dt>기준 매체</dt>
+      <dd>소재가 여러 매체에 중복 운영되어 단순 합산이 의미 없기 때문에, Unique 소재 수와 전체 판정의 기준으로 삼는 매체 1곳(기본값 Meta).</dd>
+
+      <dt>Unique Active 소재 추정</dt>
+      <dd>기준 매체의 권장 Active 값을 그대로 사용한, 실제로 제작·수급해야 하는 전체 소재 개수 추정치.</dd>
+
+      <dt>전체 판정</dt>
+      <dd>기준 매체의 현재수를 권장 Active와 비교한 결과. 현재수가 권장의 120%를 넘으면 과다, 80% 미만이면 부족, 그 사이면 적정으로 표시된다.</dd>
+    </dl>
+  </div>
+
+  <footer class="legend">
+    <span><i style="background:var(--ok)"></i>적정</span>
+    <span><i style="background:var(--warn)"></i>부족 · 증설 검토</span>
+    <span><i style="background:var(--danger)"></i>과다 · OFF 후보 검토</span>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const fmt = (n, d = 0) => Number(n).toLocaleString('ko-KR', { maximumFractionDigits: d, minimumFractionDigits: d });
+  const won = (n) => fmt(n) + '원';
+
+  // ---------- theme ----------
+  const themeToggle = $('themeToggle');
+  const themeLabel = $('themeLabel');
+  function applyTheme(mode) {
+    if (mode === 'system') {
+      document.documentElement.removeAttribute('data-theme');
+      themeLabel.textContent = '시스템';
+    } else {
+      document.documentElement.setAttribute('data-theme', mode);
+      themeLabel.textContent = mode === 'dark' ? '다크' : '라이트';
+    }
+    try { localStorage.setItem('ua_calc_theme', mode); } catch (e) {}
+  }
+  let savedTheme = 'system';
+  try { savedTheme = localStorage.getItem('ua_calc_theme') || 'system'; } catch (e) {}
+  applyTheme(savedTheme);
+  themeToggle.addEventListener('click', () => {
+    const order = ['system', 'light', 'dark'];
+    const cur = order.indexOf(savedTheme);
+    savedTheme = order[(cur + 1) % order.length];
+    applyTheme(savedTheme);
+  });
+
+  // ---------- state ----------
+  const DEFAULT_MEDIA = [
+    { name: 'Meta', share: 40, campaigns: 4, current: 6 },
+    { name: 'Google', share: 30, campaigns: 2, current: 4 },
+    { name: 'TikTok', share: 20, campaigns: 1, current: 3 },
+    { name: 'DSP', share: 10, campaigns: 1, current: 8 },
+  ];
+
+  let state = {
+    budget: 5000000, cpn: 20000, minconv: 20, stabdays: 7, basecount: 20,
+    baseMediaIndex: 0,
+    media: DEFAULT_MEDIA.map(m => ({ ...m })),
+  };
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem('ua_calc_state');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.media) && parsed.media.length) {
+          state = parsed;
+        }
+      }
+    } catch (e) {}
+  }
+  function saveState() {
+    try { localStorage.setItem('ua_calc_state', JSON.stringify(state)); } catch (e) {}
+  }
+  loadState();
+
+  // ---------- build media rows UI ----------
+  const mediaList = $('mediaList');
+  const baseMediaSel = $('baseMedia');
+
+  function renderBaseMediaSelect() {
+    const prevIndex = state.baseMediaIndex ?? 0;
+    baseMediaSel.innerHTML = state.media.map((m, i) =>
+      `<option value="${i}">${m.name || '(이름없음)'}</option>`
+    ).join('');
+    const validIndex = state.media.length ? Math.min(Math.max(prevIndex, 0), state.media.length - 1) : 0;
+    state.baseMediaIndex = validIndex;
+    baseMediaSel.value = String(validIndex);
+  }
+
+  function renderMediaRows() {
+    mediaList.innerHTML = '';
+    state.media.forEach((m, i) => {
+      const row = document.createElement('div');
+      row.className = 'media-row';
+      row.innerHTML = `
+        <div class="mr-top">
+          <input type="text" value="${m.name}" data-i="${i}" data-f="name">
+          <button class="rm" data-i="${i}" title="삭제" aria-label="매체 삭제">×</button>
+        </div>
+        <div class="mr-grid">
+          <label>비중%<input type="number" value="${m.share}" min="0" max="100" step="1" data-i="${i}" data-f="share"></label>
+          <label>캠페인 수<input type="number" value="${m.campaigns || 1}" min="1" step="1" data-i="${i}" data-f="campaigns"></label>
+          <label>현재수<input type="number" value="${m.current}" min="0" step="1" data-i="${i}" data-f="current"></label>
+        </div>
+      `;
+      mediaList.appendChild(row);
+    });
+
+    mediaList.querySelectorAll('input').forEach(inp => {
+      inp.addEventListener('input', (e) => {
+        const i = +e.target.dataset.i;
+        const f = e.target.dataset.f;
+        state.media[i][f] = f === 'name' ? e.target.value : (parseFloat(e.target.value) || 0);
+        if (f === 'name') {
+          const opt = baseMediaSel.querySelector(`option[value="${i}"]`);
+          if (opt) opt.textContent = e.target.value || '(이름없음)';
+        }
+        recalc();
+      });
+    });
+    mediaList.querySelectorAll('button.rm').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const i = +e.target.dataset.i;
+        if (state.media.length <= 1) return;
+        state.media.splice(i, 1);
+        renderMediaRows();
+        renderBaseMediaSelect();
+        recalc();
+      });
+    });
+
+    renderBaseMediaSelect();
+  }
+
+  baseMediaSel.addEventListener('change', () => {
+    state.baseMediaIndex = parseInt(baseMediaSel.value, 10) || 0;
+    recalc();
+  });
+
+  $('addMedia').addEventListener('click', () => {
+    state.media.push({ name: '신규 매체', share: 0, campaigns: 1, current: 0 });
+    renderMediaRows();
+    recalc();
+  });
+
+  // ---------- bind common fields ----------
+  function bindNumber(id, key, isPercent) {
+    const el = $(id);
+    el.addEventListener('input', () => {
+      state[key] = parseFloat(el.value) || 0;
+      recalc();
+    });
+  }
+  bindNumber('budget', 'budget');
+  bindNumber('cpn', 'cpn');
+  bindNumber('minconv', 'minconv');
+  bindNumber('stabdays', 'stabdays');
+  bindNumber('basecount', 'basecount');
+
+  function initFieldValues() {
+    $('budget').value = state.budget;
+    $('cpn').value = state.cpn;
+    $('minconv').value = state.minconv;
+    $('stabdays').value = state.stabdays;
+    $('basecount').value = state.basecount;
+  }
+
+  // ---------- calc + render ----------
+  const resultsBody = $('resultsBody');
+  const resultsFoot = $('resultsFoot');
+  const heroStrip = $('heroStrip');
+  const shareTotal = $('shareTotal');
+  const stackNote = $('stackNote');
+
+  function judge(current, recommended) {
+    if (recommended <= 0) return { label: '—', cls: 'neutral' };
+    if (current > recommended * 1.2) return { label: '과다 · OFF 후보', cls: 'danger' };
+    if (current < recommended * 0.8) return { label: '부족 · 증설 검토', cls: 'warn' };
+    return { label: '적정', cls: 'ok' };
+  }
+
+  function recalc() {
+    $('v_budget').textContent = won(state.budget);
+    $('v_cpn').textContent = won(state.cpn);
+    $('v_minconv').textContent = state.minconv + '건';
+    $('v_stabdays').textContent = state.stabdays + '일';
+    $('v_basecount').textContent = state.basecount + '개';
+
+    const shareSum = state.media.reduce((s, m) => s + (m.share || 0), 0);
+    shareTotal.innerHTML = `<span>비중 합계</span><span>${shareSum.toFixed(0)}%</span>`;
+    shareTotal.classList.toggle('bad', Math.round(shareSum) !== 100);
+
+    let rows = [];
+    let totalBudgetUsed = 0;
+
+    state.media.forEach(m => {
+      const mediaBudget = state.budget * (m.share / 100);
+      const campaigns = Math.max(1, m.campaigns || 1);
+      const campaignBudget = mediaBudget / campaigns;
+      const theoretical = (state.cpn > 0 && state.minconv > 0) ? (campaignBudget * state.stabdays) / (state.cpn * state.minconv) : 0;
+      const recommended = Math.min(theoretical, state.basecount);
+      const zone = theoretical > state.basecount * 1.1 ? 'expand'
+        : theoretical < state.basecount * 0.9 ? 'conservative'
+        : 'optimal';
+      const j = judge(m.current, recommended);
+
+      totalBudgetUsed += mediaBudget;
+
+      rows.push({ name: m.name, mediaBudget, campaigns, campaignBudget, theoretical, recommended, zone, current: m.current, j });
+    });
+
+    const zoneLabel = { expand: '확장', conservative: '보수', optimal: '적정' };
+
+    resultsBody.innerHTML = rows.map(r => `
+      <tr>
+        <td>${r.name || '—'}</td>
+        <td>${won(Math.round(r.mediaBudget))}<br><span style="font-size:9.5px;color:var(--text-muted)">캠페인당 ${won(Math.round(r.campaignBudget))}</span></td>
+        <td>${fmt(r.theoretical, 1)}<br><span style="font-size:9.5px;color:var(--text-muted)">${zoneLabel[r.zone]} 구간</span></td>
+        <td>${fmt(r.recommended, 1)}</td>
+        <td>${fmt(r.current)}</td>
+        <td><span class="badge ${r.j.cls}">${r.j.label}</span></td>
+      </tr>
+    `).join('');
+
+    resultsFoot.innerHTML = `
+      <tr>
+        <td>합계 (매체별 일예산)</td>
+        <td>${won(Math.round(totalBudgetUsed))}</td>
+        <td>—</td>
+        <td>—</td>
+        <td>—</td>
+        <td></td>
+      </tr>
+    `;
+
+    const baseIdx = state.media.length ? Math.min(Math.max(state.baseMediaIndex ?? 0, 0), state.media.length - 1) : -1;
+    const baseMedia = baseIdx >= 0 ? state.media[baseIdx] : null;
+    const baseRow = baseIdx >= 0 ? rows[baseIdx] : null;
+    const overallCurrent = baseMedia ? (baseMedia.current || 0) : 0;
+    const overallName = baseMedia ? (baseMedia.name || '기준 매체') : '기준 매체';
+
+    const uniqueActive = baseRow ? baseRow.recommended : 0;
+    const uniqueLow = Math.max(0, Math.round(uniqueActive * 0.85));
+    const uniqueHigh = Math.round(uniqueActive * 1.15);
+    const overall = judge(overallCurrent, uniqueActive);
+    const overallLabel = uniqueActive <= 0 ? '입력값을 확인하세요'
+      : overall.cls === 'danger' ? '과다 — 저효율 소재 OFF 검토'
+      : overall.cls === 'warn' ? '부족 — 신규 소재 증설 필요'
+      : '적정 수준';
+
+    heroStrip.innerHTML = `
+      <div class="hero-cell">
+        <div class="label">Unique Active 소재 추정 (기준: ${overallName})</div>
+        <div class="value">${fmt(uniqueActive, 1)}<span style="font-size:14px;color:var(--text-muted)"> 개</span></div>
+        <div class="sub">권장 범위 ${uniqueLow}~${uniqueHigh}개</div>
+      </div>
+      <div class="hero-cell judge">
+        <div class="label">전체 판정 (현재 ${fmt(overallCurrent)}개, 기준: ${overallName})</div>
+        <div class="value"><span class="badge ${uniqueActive <= 0 ? 'neutral' : overall.cls}">${overallLabel}</span></div>
+        <div class="sub">기준 매체의 권장 대비 현재</div>
+      </div>
+    `;
+
+    stackNote.innerHTML = `<b>계산 로직</b> — 매체별 일예산 = 총 일예산 × 비중 → 캠페인당 일예산 = 매체별 일예산 ÷ 캠페인 수 → 이론상 테스트가능 소재 = (캠페인당 일예산 × 안정화 기간) ÷ (목표 CPN × 최소 판단 전환 수) → 권장 Active = min(이론상 테스트가능, 적정 소재 기준 수). 같은 매체 안에서도 OS·최적화 목표별로 캠페인이 나뉘어 예산이 쪼개지므로, 캠페인 수로 나누지 않으면 소재 수요가 과대평가됩니다. 또한 소재 1개의 효율을 판단하려면 하루치 전환이 아니라 안정화 기간(기본 7일) 동안 최소 판단 전환 수(기본 20건) 이상이 쌓여야 하므로, 단순히 일예산 ÷ CPN이 아니라 이 두 값으로 나눠 실제로 감당 가능한 소재 수를 보정합니다. 이론상 값이 기준 수보다 크면 "확장 구간"(예산 여력 있음, 소재 수를 늘리거나 교체 주기를 앞당길 수 있음), 작으면 "보수 구간"(기준 수보다 적게 운영해 소재당 학습 효율에 집중)으로 표시됩니다. Unique Active 소재 수와 전체 판정은 왼쪽에서 선택한 기준 매체(기본 Meta) 1곳의 권장·현재 Active 값을 그대로 사용합니다.`;
+
+    saveState();
+  }
+
+  initFieldValues();
+  renderMediaRows();
+  recalc();
+})();
+</script>
+</body>
+</html>
